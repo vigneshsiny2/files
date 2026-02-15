@@ -1,0 +1,253 @@
+╔════════════════════════════════════════════════════════════════╗
+║  TIME BASED REVERSE STRATEGY - QUICK START GUIDE              ║
+╚════════════════════════════════════════════════════════════════╝
+
+📦 WHAT YOU RECEIVED
+════════════════════════════════════════════════════════════════
+
+1. TimeBasedReverseStrategy_API.mq5  → MT5 Expert Advisor with API
+2. server.js                         → Node.js API Server
+3. dashboard.html                    → Real-time Web Dashboard
+4. package.json                      → Node.js Dependencies
+5. trades.json                       → Database (auto-created)
+6. test-api.js                       → API Testing Script
+7. setup.sh / setup.bat              → Installation Scripts
+8. README.md                         → Complete Documentation
+
+
+🚀 3-MINUTE SETUP
+════════════════════════════════════════════════════════════════
+
+STEP 1: Install Node.js (if needed)
+─────────────────────────────────────────────────────────────────
+• Download: https://nodejs.org/
+• Install version 16 or higher
+• Verify: Open terminal/cmd and type: node -v
+
+
+STEP 2: Setup API Server
+─────────────────────────────────────────────────────────────────
+Windows:
+  1. Double-click setup.bat
+  2. Wait for installation to complete
+  
+Mac/Linux:
+  1. Open terminal in project folder
+  2. Run: chmod +x setup.sh
+  3. Run: ./setup.sh
+
+
+STEP 3: Start Server
+─────────────────────────────────────────────────────────────────
+  Open terminal/cmd in project folder
+  Run: npm start
+  
+  ✓ Server running at: http://localhost:3000
+
+
+STEP 4: Setup MT5
+─────────────────────────────────────────────────────────────────
+A) Enable WebRequest:
+   • Tools → Options → Expert Advisors
+   • Check: Allow WebRequest for listed URL
+   • Add: http://localhost:3000
+   • Click OK
+   
+B) Install EA:
+   • Copy TimeBasedReverseStrategy_API.mq5 to:
+     C:\Users\[YourName]\AppData\Roaming\MetaQuotes\
+     Terminal\[BrokerID]\MQL5\Experts\
+   
+C) Compile EA:
+   • Open MetaEditor (F4 in MT5)
+   • Open the .mq5 file
+   • Press F7 to compile
+   • Check for errors
+   
+D) Attach to Chart:
+   • Open M5 (5-minute) chart
+   • Drag EA onto chart
+   • Enable AutoTrading button
+
+
+STEP 5: Open Dashboard
+─────────────────────────────────────────────────────────────────
+  Open browser: http://localhost:3000/dashboard.html
+  
+  You should see:
+  ✓ Green "API Connected" status
+  ✓ Statistics cards
+  ✓ Equity curve chart
+  ✓ Trade history table
+
+
+🧪 TEST WITHOUT MT5
+════════════════════════════════════════════════════════════════
+
+Want to test the system before trading?
+
+1. Make sure server is running (npm start)
+2. Run test script: npm test
+3. Check dashboard - you'll see 3 sample trades!
+4. Click "Clear All" button to remove test data
+
+
+📊 HOW IT WORKS
+════════════════════════════════════════════════════════════════
+
+Live Trading:
+  MT5 EA → HTTP POST → API Server → trades.json
+                     ↓
+                Dashboard (auto-refresh 5s)
+
+Backtesting:
+  Same process! Trades marked as "BACKTEST"
+
+
+⚡ TRADING STRATEGY
+════════════════════════════════════════════════════════════════
+
+Time:     15:25 (daily)
+Timeframe: M5 (5-minute chart)
+Logic:    
+  • If previous candle is BULLISH → Open SELL
+  • If previous candle is BEARISH → Open BUY
+  
+Stop Loss:     10 pips
+Take Profit:   40 pips
+Risk/Reward:   1:4
+
+
+🎯 WHAT TO EXPECT
+════════════════════════════════════════════════════════════════
+
+When EA runs at 15:25:
+1. EA checks previous M5 candle
+2. Opens reverse position
+3. Sends data to API (ticket, price, SL, TP)
+4. Dashboard shows "OPEN" or "PENDING" status
+
+When trade closes (hits TP or SL):
+1. EA detects closure
+2. Updates API with exit price and P&L
+3. Dashboard updates status to "WIN" or "LOSS"
+4. Statistics and equity curve update automatically
+
+
+📱 DASHBOARD FEATURES
+════════════════════════════════════════════════════════════════
+
+Stats Cards:
+  • Total Trades - Completed trades count
+  • Win Rate - % winning trades
+  • Total Profit - Cumulative P&L
+  • Today's P&L - Current day profit/loss
+
+Equity Curve:
+  • Visual graph of account growth
+  • Interactive zoom and hover
+
+Trade Table:
+  • All trade details in columns
+  • Color-coded (green=win, red=loss)
+  • Backtest indicator badge
+  • Filter by date
+
+Controls:
+  • Filter by Date - Show specific day
+  • Clear Filter - Show all
+  • Refresh - Manual update
+  • Clear All - Reset database
+
+
+🔧 TROUBLESHOOTING
+════════════════════════════════════════════════════════════════
+
+Problem: "API Offline" in dashboard
+Solution: 
+  → Check server is running (npm start)
+  → Go to: http://localhost:3000/api/health
+  → Should return: {"success":true}
+
+Problem: "WebRequest error" in MT5
+Solution:
+  → Tools → Options → Expert Advisors
+  → Add: http://localhost:3000
+  → Restart MT5
+
+Problem: Trades not appearing
+Solution:
+  → Check time is 15:25 on M5 chart
+  → Verify AutoTrading is enabled
+  → Check MT5 Experts tab for errors
+  → EA must be on M5 timeframe only
+
+Problem: Dashboard not updating
+Solution:
+  → Clear browser cache (Ctrl+F5)
+  → Check browser console (F12)
+  → Verify server console for errors
+
+
+💡 TIPS & BEST PRACTICES
+════════════════════════════════════════════════════════════════
+
+Testing:
+  ✓ Use demo account first
+  ✓ Test with npm test script
+  ✓ Run backtest before live trading
+  ✓ Start with small lot sizes (0.01)
+
+Live Trading:
+  ✓ Keep server running during trading hours
+  ✓ Monitor dashboard for real-time updates
+  ✓ Set calendar reminder for 15:25
+  ✓ Review daily at end of trading day
+
+Backtesting:
+  ✓ Use "Every tick" mode in Strategy Tester
+  ✓ Select date range with activity at 15:25
+  ✓ Enable WebRequest in tester settings
+  ✓ Results appear in dashboard with "BACKTEST" tag
+
+Database:
+  ✓ Backup trades.json regularly
+  ✓ Export data monthly
+  ✓ Use Clear All to reset
+  ✓ Keep server logs for debugging
+
+
+📞 QUICK REFERENCE
+════════════════════════════════════════════════════════════════
+
+Start Server:        npm start
+Test API:            npm test
+Dashboard:           http://localhost:3000/dashboard.html
+API Health:          http://localhost:3000/api/health
+View All Trades:     http://localhost:3000/api/trades
+View Stats:          http://localhost:3000/api/stats
+
+MT5 EA Settings:
+  API_URL:          http://localhost:3000/api/trades
+  LotSize:          0.10 (adjust as needed)
+  TradeHour:        15
+  TradeMinute:      25
+  StopLossPips:     10
+  TakeProfitPips:   40
+
+
+🎉 READY TO GO!
+════════════════════════════════════════════════════════════════
+
+1. Server running?           → npm start
+2. Dashboard open?           → http://localhost:3000/dashboard.html
+3. MT5 WebRequest enabled?   → http://localhost:3000 in whitelist
+4. EA attached to M5 chart?  → AutoTrading ON
+5. Clock shows 15:25?        → Wait for trade!
+
+Good luck and happy trading! 📈
+
+
+═══════════════════════════════════════════════════════════════
+For detailed documentation, see README.md
+═══════════════════════════════════════════════════════════════
