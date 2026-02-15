@@ -8,7 +8,7 @@
 CTrade trade;
 
 // Inputs
-input string  API_URL = "http://localhost:3000/api/trades";  // Your API endpoint
+input string  API_URL = "https://eausdjpyopposite.onrender.com/api/trades";  // Your API endpoint
 input double  LotSize = 0.10;
 input int     TradeHour = 15;
 input int     TradeMinute = 25;

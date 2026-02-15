@@ -310,7 +310,7 @@ app.listen(PORT, () => {
     console.log(`  - DELETE /api/trades       - Delete all trades`);
     console.log(`\n✓ Dashboard: http://localhost:${PORT}/dashboard.html`);
     console.log(`\n⚠ IMPORTANT: In MT5, add this URL to WebRequest whitelist:`);
-    console.log(`  Tools -> Options -> Expert Advisors -> Allow WebRequest:`);
-    console.log(`  http://localhost:${PORT}`);
+    console.log(`  https://eausdjpyopposite.onrender.com`);
+    console.log(`  (Or http://localhost:${PORT} for local testing)`);
     console.log('\n══════════════════════════════════════════════════════════\n');
 });

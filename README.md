@@ -39,8 +39,8 @@ Complete trading system with MT5 EA, REST API, and live dashboard for real-time 
    ║   Time Based Reverse Strategy - API Server              ║
    ╚══════════════════════════════════════════════════════════╝
    
-   ✓ Server running on http://localhost:3000
-   ✓ Dashboard: http://localhost:3000/dashboard.html
+   ✓ Server running on https://eausdjpyopposite.onrender.com
+   ✓ Dashboard: https://eausdjpyopposite.onrender.com/dashboard.html
    ```
 
 ### Step 2: Setup MT5 EA
@@ -53,7 +53,7 @@ Complete trading system with MT5 EA, REST API, and live dashboard for real-time 
    - Open MT5
    - Go to: `Tools → Options → Expert Advisors`
    - Check: ✅ `Allow WebRequest for listed URL:`
-   - Add: `http://localhost:3000`
+   - Add: `https://eausdjpyopposite.onrender.com`
    - Click `OK`
 
 3. **Compile the EA**
@@ -66,7 +66,7 @@ Complete trading system with MT5 EA, REST API, and live dashboard for real-time 
    - Open a M5 (5-minute) chart in MT5
    - Drag and drop the EA onto the chart
    - In EA settings, verify:
-     - `API_URL`: `http://localhost:3000/api/trades`
+     - `API_URL`: `https://eausdjpyopposite.onrender.com/api/trades`
      - `LotSize`: `0.10` (or your preference)
      - `TradeHour`: `15`
      - `TradeMinute`: `25`
@@ -76,7 +76,7 @@ Complete trading system with MT5 EA, REST API, and live dashboard for real-time 
 
 1. Open your browser and go to:
    ```
-   http://localhost:3000/dashboard.html
+   https://eausdjpyopposite.onrender.com/dashboard.html
    ```
 
 2. You should see:
@@ -122,7 +122,7 @@ Columns:
 
 #### Get All Trades
 ```http
-GET http://localhost:3000/api/trades
+GET https://eausdjpyopposite.onrender.com/api/trades
 ```
 
 Query Parameters:
@@ -132,12 +132,12 @@ Query Parameters:
 
 Example:
 ```http
-GET http://localhost:3000/api/trades?date=2024-02-14&type=BUY
+GET https://eausdjpyopposite.onrender.com/api/trades?date=2024-02-14&type=BUY
 ```
 
 #### Get Statistics
 ```http
-GET http://localhost:3000/api/stats
+GET https://eausdjpyopposite.onrender.com/api/stats
 ```
 
 Returns:
@@ -164,7 +164,7 @@ Returns:
 
 #### Create New Trade
 ```http
-POST http://localhost:3000/api/trades
+POST https://eausdjpyopposite.onrender.com/api/trades
 Content-Type: application/json
 
 {
@@ -186,7 +186,7 @@ Content-Type: application/json
 
 #### Update Trade (When Closed)
 ```http
-PUT http://localhost:3000/api/trades/123456789
+PUT https://eausdjpyopposite.onrender.com/api/trades/123456789
 Content-Type: application/json
 
 {
@@ -200,12 +200,12 @@ Content-Type: application/json
 
 #### Delete Single Trade
 ```http
-DELETE http://localhost:3000/api/trades/123456789
+DELETE https://eausdjpyopposite.onrender.com/api/trades/123456789
 ```
 
 #### Delete All Trades
 ```http
-DELETE http://localhost:3000/api/trades
+DELETE https://eausdjpyopposite.onrender.com/api/trades
 ```
 
 ## 🧪 Testing with Backtest
@@ -223,7 +223,7 @@ DELETE http://localhost:3000/api/trades
 3. **Important Settings**
    - Go to: `Settings → Expert Properties`
    - Enable: ✅ `Allow WebRequest`
-   - Add URL: `http://localhost:3000`
+   - Add URL: `https://eausdjpyopposite.onrender.com`
 
 4. **Start Backtest**
    - Click `Start`
@@ -264,7 +264,7 @@ project/
 
 ### EA Settings (MT5)
 ```mql5
-input string  API_URL = "http://localhost:3000/api/trades";
+input string  API_URL = "https://eausdjpyopposite.onrender.com/api/trades";
 input double  LotSize = 0.10;
 input int     TradeHour = 15;
 input int     TradeMinute = 25;
@@ -282,14 +282,14 @@ const PORT = 3000;  // Change if needed
 ### Problem: "WebRequest error" in MT5
 **Solution**: 
 - Go to `Tools → Options → Expert Advisors`
-- Add `http://localhost:3000` to allowed URLs
+- Add `https://eausdjpyopposite.onrender.com` to allowed URLs
 - Restart MT5
 
 ### Problem: Dashboard shows "API Offline"
 **Solution**:
 - Check if server is running: `npm start`
 - Check console for errors
-- Verify URL: http://localhost:3000/api/health
+- Verify URL: https://eausdjpyopposite.onrender.com/api/health
 
 ### Problem: Trades not appearing
 **Solution**:

@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:3000/api';
+const API_URL = 'https://eausdjpyopposite.onrender.com/api';
 
 console.log('╔══════════════════════════════════════════════════════════╗');
 console.log('║   API Test Script - Sending Sample Trades               ║');
@@ -58,7 +58,7 @@ async function checkAPIHealth() {
     try {
         const response = await fetch(`${API_URL}/health`);
         const data = await response.json();
-        
+
         if (data.success) {
             console.log('✓ API is running');
             console.log(`  Status: ${data.status}`);
@@ -81,9 +81,9 @@ async function sendTrade(trade) {
             },
             body: JSON.stringify(trade)
         });
-        
+
         const data = await response.json();
-        
+
         if (data.success) {
             console.log(`✓ Trade created: ${trade.type} ${trade.symbol} | Ticket: ${trade.ticket}`);
             return true;
@@ -106,9 +106,9 @@ async function updateTrade(update) {
             },
             body: JSON.stringify(update)
         });
-        
+
         const data = await response.json();
-        
+
         if (data.success) {
             console.log(`✓ Trade updated: Ticket ${update.ticket} | P&L: $${update.pnl} | Status: ${update.status}`);
             return true;
@@ -129,33 +129,33 @@ async function delay(ms) {
 async function runTest() {
     console.log('Step 1: Checking API health...\n');
     const isHealthy = await checkAPIHealth();
-    
+
     if (!isHealthy) {
         console.log('Exiting...');
         return;
     }
-    
+
     console.log('Step 2: Sending sample trades...\n');
-    
+
     for (const trade of sampleTrades) {
         await sendTrade(trade);
         await delay(500); // Wait 500ms between trades
     }
-    
+
     console.log('\nStep 3: Waiting 2 seconds before updating trades...\n');
     await delay(2000);
-    
+
     console.log('Step 4: Updating trades (simulating closes)...\n');
-    
+
     for (const update of tradeUpdates) {
         await updateTrade(update);
         await delay(500);
     }
-    
+
     console.log('\n╔══════════════════════════════════════════════════════════╗');
     console.log('║   Test Completed Successfully!                          ║');
     console.log('╚══════════════════════════════════════════════════════════╝');
-    console.log('\nCheck the dashboard at: http://localhost:3000/dashboard.html');
+    console.log('\nCheck the dashboard at: https://eausdjpyopposite.onrender.com/dashboard.html');
     console.log('You should see 3 trades with results.\n');
 }
 

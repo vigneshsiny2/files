@@ -39,10 +39,10 @@ if %errorlevel% equ 0 (
     echo.
     echo Next Steps:
     echo 1. Start the server: npm start
-    echo 2. Open dashboard: http://localhost:3000/dashboard.html
+    echo 2. Open dashboard: https://eausdjpyopposite.onrender.com/dashboard.html
     echo 3. Configure MT5:
     echo    - Tools -^> Options -^> Expert Advisors
-    echo    - Allow WebRequest for: http://localhost:3000
+    echo    - Allow WebRequest for: https://eausdjpyopposite.onrender.com
     echo 4. Attach EA to M5 chart
     echo.
     echo Ready to trade!

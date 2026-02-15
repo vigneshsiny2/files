@@ -42,7 +42,7 @@ STEP 3: Start Server
   Open terminal/cmd in project folder
   Run: npm start
   
-  ✓ Server running at: http://localhost:3000
+  ✓ Server running at: https://eausdjpyopposite.onrender.com
 
 
 STEP 4: Setup MT5
@@ -50,7 +50,7 @@ STEP 4: Setup MT5
 A) Enable WebRequest:
    • Tools → Options → Expert Advisors
    • Check: Allow WebRequest for listed URL
-   • Add: http://localhost:3000
+   • Add: https://eausdjpyopposite.onrender.com
    • Click OK
    
 B) Install EA:
@@ -72,7 +72,7 @@ D) Attach to Chart:
 
 STEP 5: Open Dashboard
 ─────────────────────────────────────────────────────────────────
-  Open browser: http://localhost:3000/dashboard.html
+  Open browser: https://eausdjpyopposite.onrender.com/dashboard.html
   
   You should see:
   ✓ Green "API Connected" status
@@ -166,13 +166,13 @@ Controls:
 Problem: "API Offline" in dashboard
 Solution: 
   → Check server is running (npm start)
-  → Go to: http://localhost:3000/api/health
+  → Go to: https://eausdjpyopposite.onrender.com/api/health
   → Should return: {"success":true}
 
 Problem: "WebRequest error" in MT5
 Solution:
   → Tools → Options → Expert Advisors
-  → Add: http://localhost:3000
+  → Add: https://eausdjpyopposite.onrender.com
   → Restart MT5
 
 Problem: Trades not appearing
@@ -222,13 +222,13 @@ Database:
 
 Start Server:        npm start
 Test API:            npm test
-Dashboard:           http://localhost:3000/dashboard.html
-API Health:          http://localhost:3000/api/health
-View All Trades:     http://localhost:3000/api/trades
-View Stats:          http://localhost:3000/api/stats
+Dashboard:           https://eausdjpyopposite.onrender.com/dashboard.html
+API Health:          https://eausdjpyopposite.onrender.com/api/health
+View All Trades:     https://eausdjpyopposite.onrender.com/api/trades
+View Stats:          https://eausdjpyopposite.onrender.com/api/stats
 
 MT5 EA Settings:
-  API_URL:          http://localhost:3000/api/trades
+  API_URL:          https://eausdjpyopposite.onrender.com/api/trades
   LotSize:          0.10 (adjust as needed)
   TradeHour:        15
   TradeMinute:      25
@@ -240,8 +240,8 @@ MT5 EA Settings:
 ════════════════════════════════════════════════════════════════
 
 1. Server running?           → npm start
-2. Dashboard open?           → http://localhost:3000/dashboard.html
-3. MT5 WebRequest enabled?   → http://localhost:3000 in whitelist
+2. Dashboard open?           → https://eausdjpyopposite.onrender.com/dashboard.html
+3. MT5 WebRequest enabled?   → https://eausdjpyopposite.onrender.com in whitelist
 4. EA attached to M5 chart?  → AutoTrading ON
 5. Clock shows 15:25?        → Wait for trade!
 
