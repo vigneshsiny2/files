@@ -399,6 +399,101 @@
             document.getElementById('errorContainer').innerHTML = '';
         }
 
+        // --- Local backup helpers to persist data across refreshes ---
+        const LOCAL_KEYS = {
+            TRADES: 'tbtrs_trades',
+            STATS: 'tbtrs_stats',
+            EQUITY: 'tbtrs_equity',
+            LAST_UPDATE: 'tbtrs_lastUpdate'
+        };
+
+        function saveTradesToLocal(trades) {
+            try {
+                if (Array.isArray(trades) && trades.length > 0) {
+                    localStorage.setItem(LOCAL_KEYS.TRADES, JSON.stringify(trades));
+                    localStorage.setItem(LOCAL_KEYS.LAST_UPDATE, new Date().toISOString());
+                }
+            } catch (e) {
+                console.warn('Failed to save trades to localStorage', e);
+            }
+        }
+
+        function saveStatsToLocal(stats, equityCurve) {
+            try {
+                if (stats && (stats.totalTrades > 0 || (Array.isArray(equityCurve) && equityCurve.length > 0))) {
+                    localStorage.setItem(LOCAL_KEYS.STATS, JSON.stringify(stats));
+                }
+
+                if (Array.isArray(equityCurve) && equityCurve.length > 0) {
+                    localStorage.setItem(LOCAL_KEYS.EQUITY, JSON.stringify(equityCurve));
+                    localStorage.setItem(LOCAL_KEYS.LAST_UPDATE, new Date().toISOString());
+                }
+            } catch (e) {
+                console.warn('Failed to save stats/equity to localStorage', e);
+            }
+        }
+
+        function clearLocalBackup() {
+            try {
+                localStorage.removeItem(LOCAL_KEYS.TRADES);
+                localStorage.removeItem(LOCAL_KEYS.STATS);
+                localStorage.removeItem(LOCAL_KEYS.EQUITY);
+                localStorage.removeItem(LOCAL_KEYS.LAST_UPDATE);
+            } catch (e) {
+                console.warn('Failed to clear localStorage', e);
+            }
+        }
+
+        function restoreFromLocalBackup() {
+            try {
+                const tradesRaw = localStorage.getItem(LOCAL_KEYS.TRADES);
+                const statsRaw = localStorage.getItem(LOCAL_KEYS.STATS);
+                const equityRaw = localStorage.getItem(LOCAL_KEYS.EQUITY);
+                const lastUpdateRaw = localStorage.getItem(LOCAL_KEYS.LAST_UPDATE);
+
+                let restored = false;
+
+                if (statsRaw) {
+                    const stats = JSON.parse(statsRaw);
+                    document.getElementById('totalTrades').textContent = stats.totalTrades;
+                    document.getElementById('winRate').textContent = `${stats.winRate}%`;
+
+                    const profitEl = document.getElementById('totalProfit');
+                    profitEl.textContent = `$${parseFloat(stats.totalProfit).toFixed(2)}`;
+                    profitEl.className = `value ${stats.totalProfit >= 0 ? 'positive' : 'negative'}`;
+
+                    const todayEl = document.getElementById('todayPnL');
+                    todayEl.textContent = `$${parseFloat(stats.todayPnL).toFixed(2)}`;
+                    todayEl.className = `value ${stats.todayPnL >= 0 ? 'positive' : 'negative'}`;
+
+                    restored = true;
+                }
+
+                if (equityRaw) {
+                    const equity = JSON.parse(equityRaw);
+                    updateChart(equity);
+                    restored = true;
+                }
+
+                if (tradesRaw) {
+                    const trades = JSON.parse(tradesRaw);
+                    renderTrades(trades);
+                    restored = true;
+                }
+
+                if (restored) {
+                    const last = lastUpdateRaw ? new Date(lastUpdateRaw).toLocaleString() : 'cached';
+                    document.getElementById('lastUpdate').textContent = `Last updated: ${last} (cached)`;
+                    updateStatus(false, 'Offline - Showing cached data');
+                }
+
+                return restored;
+            } catch (e) {
+                console.warn('Failed to restore from local backup', e);
+                return false;
+            }
+        }
+
         // Load all data
         async function loadData() {
             try {
@@ -410,7 +505,13 @@
                 updateLastUpdateTime();
             } catch (error) {
                 console.error('Error loading data:', error);
-                showError('Failed to load data: ' + error.message);
+                showError('Failed to load data from API: ' + error.message + '. Attempting to restore cached data...');
+
+                const restored = restoreFromLocalBackup();
+                if (!restored) {
+                    // If nothing in cache, show friendly message
+                    showError('No cached data available. Make sure the API/server is running and that trades exist.');
+                }
             }
         }
 
@@ -419,23 +520,28 @@
             try {
                 const response = await fetch(`${API_URL}/stats`);
                 const data = await response.json();
-                
+
                 if (data.success) {
                     const stats = data.stats;
-                    
+
                     document.getElementById('totalTrades').textContent = stats.totalTrades;
                     document.getElementById('winRate').textContent = `${stats.winRate}%`;
-                    
+
                     const profitEl = document.getElementById('totalProfit');
                     profitEl.textContent = `$${stats.totalProfit.toFixed(2)}`;
                     profitEl.className = `value ${stats.totalProfit >= 0 ? 'positive' : 'negative'}`;
-                    
+
                     const todayEl = document.getElementById('todayPnL');
                     todayEl.textContent = `$${stats.todayPnL.toFixed(2)}`;
                     todayEl.className = `value ${stats.todayPnL >= 0 ? 'positive' : 'negative'}`;
-                    
+
                     updateChart(data.equityCurve);
                     updateStatus(true, 'Live Data');
+
+                    // Save to local cache only if there is meaningful data
+                    saveStatsToLocal(stats, data.equityCurve);
+                } else {
+                    throw new Error(data.error || 'Failed to load stats');
                 }
             } catch (error) {
                 console.error('Error loading stats:', error);
@@ -449,9 +555,14 @@
                 const url = currentFilter ? `${API_URL}/trades?date=${currentFilter}` : `${API_URL}/trades`;
                 const response = await fetch(url);
                 const data = await response.json();
-                
+
                 if (data.success) {
                     renderTrades(data.trades);
+
+                    // Save trades to local cache if there are any
+                    saveTradesToLocal(data.trades);
+                } else {
+                    throw new Error(data.error || 'Failed to load trades');
                 }
             } catch (error) {
                 console.error('Error loading trades:', error);
@@ -464,19 +575,19 @@
             const tbody = document.getElementById('tradesBody');
             const table = document.getElementById('tradesTable');
             const loading = document.getElementById('tableLoading');
-            
+
             tbody.innerHTML = '';
-            
-            if (trades.length === 0) {
+
+            if (!Array.isArray(trades) || trades.length === 0) {
                 loading.textContent = 'No trades found';
                 loading.style.display = 'block';
                 table.style.display = 'none';
                 return;
             }
-            
+
             loading.style.display = 'none';
             table.style.display = 'table';
-            
+
             // Sort by date and time (newest first)
             trades.sort((a, b) => {
                 const dateA = new Date(a.date + ' ' + a.time);
@@ -515,14 +626,14 @@
             if (!equityCurve || equityCurve.length === 0) {
                 return;
             }
-            
+
             const labels = equityCurve.map(d => d.date);
             const data = equityCurve.map(d => d.equity);
-            
+
             if (equityChart) {
                 equityChart.destroy();
             }
-            
+
             const ctx = document.getElementById('equityChart').getContext('2d');
             equityChart = new Chart(ctx, {
                 type: 'line',
@@ -594,16 +705,18 @@
             if (!confirm('Are you sure you want to delete ALL trades? This cannot be undone!')) {
                 return;
             }
-            
+
             try {
                 const response = await fetch(`${API_URL}/trades`, {
                     method: 'DELETE'
                 });
-                
+
                 const data = await response.json();
-                
+
                 if (data.success) {
                     alert('All trades deleted successfully');
+                    // Clear local backup as well
+                    clearLocalBackup();
                     loadData();
                 } else {
                     alert('Failed to delete trades: ' + data.error);

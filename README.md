@@ -10,8 +10,8 @@ Complete trading system with MT5 EA, REST API, and live dashboard for real-time 
 │  (Live/BT)  │         │  API Server │         │  (Browser)  │
 └─────────────┘         └─────────────┘         └─────────────┘
      ↓                         ↓                        ↑
-  Trades                   trades.json               Auto-refresh
-  Execute                   Database                  Every 5s
+  Trades                 PostgreSQL DB               Auto-refresh
+  Execute                   Storage                  Every 5s
 ```
 
 ## 🚀 Quick Start Guide
@@ -238,7 +238,7 @@ project/
 ├── server.js                          # Node.js API Server
 ├── dashboard.html                     # Real-time Dashboard
 ├── package.json                       # Node.js Dependencies
-├── trades.json                        # Database (auto-created)
+├── db.js                              # PostgreSQL setup + connection
 └── README.md                          # This file
 ```
 
@@ -253,7 +253,7 @@ project/
 ### 2. API Communication
 - On trade open: EA sends POST request to API
 - On trade close: EA sends PUT request to API
-- API stores all data in `trades.json`
+- API stores all data in PostgreSQL (`trades` table)
 
 ### 3. Dashboard Display
 - Dashboard fetches data every 5 seconds
@@ -317,7 +317,7 @@ const PORT = 3000;  // Change if needed
    - Review results in dashboard
 
 3. **Database Management**:
-   - Backup `trades.json` regularly
+   - Backup/export PostgreSQL data regularly
    - Archive old data monthly
    - Use "Clear All" to reset database
 
@@ -326,11 +326,11 @@ const PORT = 3000;  // Change if needed
 ⚠️ **Important**: This system is designed for **local use only**.
 
 - API has no authentication
-- Database is a simple JSON file
-- Not suitable for production deployment
+- Database is PostgreSQL (managed DB on Render recommended)
+- Add authentication before production deployment
 - For production, consider:
   - Adding authentication (JWT tokens)
-  - Using real database (MongoDB, PostgreSQL)
+  - Restricting DB access and rotating credentials
   - Implementing HTTPS
   - Adding rate limiting
 

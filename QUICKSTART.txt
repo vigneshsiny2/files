@@ -9,7 +9,7 @@
 2. server.js                         → Node.js API Server
 3. dashboard.html                    → Real-time Web Dashboard
 4. package.json                      → Node.js Dependencies
-5. trades.json                       → Database (auto-created)
+5. db.js                            → PostgreSQL DB connection
 6. test-api.js                       → API Testing Script
 7. setup.sh / setup.bat              → Installation Scripts
 8. README.md                         → Complete Documentation
@@ -96,7 +96,7 @@ Want to test the system before trading?
 ════════════════════════════════════════════════════════════════
 
 Live Trading:
-  MT5 EA → HTTP POST → API Server → trades.json
+  MT5 EA → HTTP POST → API Server → PostgreSQL DB
                      ↓
                 Dashboard (auto-refresh 5s)
 
@@ -211,7 +211,7 @@ Backtesting:
   ✓ Results appear in dashboard with "BACKTEST" tag
 
 Database:
-  ✓ Backup trades.json regularly
+  ✓ Backup/export PostgreSQL regularly
   ✓ Export data monthly
   ✓ Use Clear All to reset
   ✓ Keep server logs for debugging
