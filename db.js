@@ -2,9 +2,16 @@
 // PostgreSQL connection and helpers for trades
 const { Pool } = require('pg');
 
+const isRender = Boolean(process.env.RENDER);
+const databaseUrl = process.env.DATABASE_URL;
+
+if (isRender && !databaseUrl) {
+    throw new Error('DATABASE_URL is missing on Render. Attach a Render PostgreSQL database or set DATABASE_URL in service environment variables.');
+}
+
 const pool = new Pool({
-    connectionString: process.env.DATABASE_URL || 'postgresql://postgres:password@localhost:5432/tbtrs',
-    ssl: process.env.DATABASE_URL ? { rejectUnauthorized: false } : false
+    connectionString: databaseUrl || 'postgresql://postgres:password@localhost:5432/tbtrs',
+    ssl: databaseUrl ? { rejectUnauthorized: false } : false
 });
 
 async function initDb() {
